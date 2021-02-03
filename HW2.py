@@ -76,10 +76,13 @@ plt.subplot(3,4,12), plt.plot(histHue_BM,"b"),plt.plot(histSat_BM,"r"),plt.plot(
 plt.xlim([0,256])
 plt.show()
 
-#for i in range(0,255):
-#    print(i,"\t",histHue_P[i])
-#    print(i,"\t",histSat_P[i])
-#    print(i,"\t",histHue_G[i])
-#    print(i,"\t",histSat_G[i])
-#    print(i,"\t",histHue_B[i])
-#    print(i,"\t",histSat_B[i])
+for i in range(0,255):
+    print(i,"\t","Pink Hue",'\t',histHue_P[i])
+    print(i,"\t","Pink Sat",'\t',histSat_P[i])
+    print(i,"\t","Pink Value",'\t',histVal_P[i])    
+    print(i,"\t","Green Hue",'\t',histHue_G[i])
+    print(i,"\t","Green Sat",'\t',histSat_G[i])
+    print(i,"\t","Green Value",'\t',histVal_G[i])
+    print(i,"\t","Blue Hue",'\t',histHue_B[i])
+    print(i,"\t","Blue Sat",'\t',histSat_B[i])
+    print(i,"\t","Blue Value",'\t',histVal_B[i])
