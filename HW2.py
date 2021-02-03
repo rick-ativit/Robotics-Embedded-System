@@ -12,11 +12,11 @@ imageB_HSV = cv2.cvtColor(imageB, cv2.COLOR_BGR2HSV)
 
 # Mask for each image
 maskP = np.zeros(imageP.shape[:2], np.uint8) 
-maskP[80:280, 150:350] = 255
+maskP[90:270, 155:340] = 255
 maskG = np.zeros(imageG.shape[:2], np.uint8) 
-maskG[70:285, 170:400] = 255
+maskG[73:280, 180:383] = 255
 maskB = np.zeros(imageB.shape[:2], np.uint8) 
-maskB[80:240, 115:275] = 255
+maskB[85:237, 120:267] = 255
 # Masked image
 masked_imageP = cv2.bitwise_and(imageP,imageP,mask = maskP)
 masked_imageG = cv2.bitwise_and(imageG,imageG,mask = maskG)
@@ -60,29 +60,45 @@ histSat_BM = cv2.calcHist([Sat_BM], [0], maskB, [256], [0,256])
 histVal_BM = cv2.calcHist([Val_BM], [0], maskB, [256], [0,256])
 
 #Plot
-plt.subplot(341), plt.imshow(imageP)
-plt.subplot(342), plt.imshow(masked_imageP)
+plt.subplot(341), plt.imshow(imageP[:,:,::-1])
+plt.subplot(342), plt.imshow(masked_imageP[:,:,::-1])
 plt.subplot(343), plt.plot(histHue_P,"b"),plt.plot(histSat_P,"r"),plt.plot(histVal_P,"g")
 plt.subplot(344), plt.plot(histHue_PM,"b"),plt.plot(histSat_PM,"r"),plt.plot(histVal_PM,"g")
-plt.subplot(345), plt.imshow(imageG)
-plt.subplot(346), plt.imshow(masked_imageG)
+plt.subplot(345), plt.imshow(imageG[:,:,::-1])
+plt.subplot(346), plt.imshow(masked_imageG[:,:,::-1])
 plt.subplot(347), plt.plot(histHue_G,"b"),plt.plot(histSat_G,"r"),plt.plot(histVal_G,"g")
 plt.subplot(348), plt.plot(histHue_GM,"b"),plt.plot(histSat_GM,"r"),plt.plot(histVal_GM,"g")
-plt.subplot(349), plt.imshow(imageB)
-plt.subplot(3,4,10), plt.imshow(masked_imageB)
+plt.subplot(349), plt.imshow(imageB[:,:,::-1])
+plt.subplot(3,4,10), plt.imshow(masked_imageB[:,:,::-1])
 plt.subplot(3,4,11), plt.plot(histHue_B,"b"),plt.plot(histSat_B,"r"),plt.plot(histVal_B,"g")
 plt.subplot(3,4,12), plt.plot(histHue_BM,"b"),plt.plot(histSat_BM,"r"),plt.plot(histVal_BM,"g")
 
 plt.xlim([0,256])
 plt.show()
 
-for i in range(0,255):
-    print(i,"\t","Pink Hue",'\t',histHue_P[i])
-    print(i,"\t","Pink Sat",'\t',histSat_P[i])
-    print(i,"\t","Pink Value",'\t',histVal_P[i])    
-    print(i,"\t","Green Hue",'\t',histHue_G[i])
-    print(i,"\t","Green Sat",'\t',histSat_G[i])
-    print(i,"\t","Green Value",'\t',histVal_G[i])
-    print(i,"\t","Blue Hue",'\t',histHue_B[i])
-    print(i,"\t","Blue Sat",'\t',histSat_B[i])
-    print(i,"\t","Blue Value",'\t',histVal_B[i])
+for i in range(0,256):
+    #if histHue_P[i]==histHue_PM[i] and histHue_P[i]!=0:
+    print(i,"\t","Pink Hue",'\t',histHue_P[i],'\t',histHue_PM[i])
+    #if histSat_P[i]==histSat_PM[i] and histSat_P[i]!=0:
+    print(i,"\t","Pink Sat",'\t',histSat_P[i],'\t',histSat_PM[i])
+    #if histVal_P[i]==histVal_PM[i] and histVal_P[i]!=0:
+    print(i,"\t","Pink Value",'\t',histVal_P[i],'\t',histVal_PM[i])
+input('Press enter to continue')
+for i in range(0,256):
+    #if histHue_G[i]==histHue_GM[i] and histHue_G[i]!=0:
+    print(i,"\t","Green Hue",'\t',histHue_G[i],'\t',histHue_GM[i])
+    #if histSat_G[i]==histSat_GM[i] and histSat_G[i]!=0:    
+    print(i,"\t","Green Sat",'\t',histSat_G[i],'\t',histSat_GM[i])
+    #if histVal_G[i]==histVal_GM[i] and histVal_G[i]!=0:    
+    print(i,"\t","Green Value",'\t',histVal_G[i],'\t',histVal_GM[i])
+input('Press enter to continue')
+for i in range(0,256):
+    #if histHue_B[i]==histHue_BM[i] and histHue_B[i]!=0:
+    print(i,"\t","Blue Hue",'\t',histHue_B[i],'\t',histHue_BM[i])
+    #if histSat_B[i]==histSat_BM[i] and histSat_B[i]!=0:
+    print(i,"\t","Blue Sat",'\t',histSat_B[i],'\t',histSat_BM[i])
+    #if histVal_B[i]==histVal_BM[i] and histVal_B[i]!=0:
+    print(i,"\t","Blue Value",'\t',histVal_B[i],'\t',histVal_BM[i])
+#Pink   (174-177,114-125,251-255)
+#Green  (29-34, 116-170, 161-184)
+#Blue   (101-105, 125-173, 176-215)
