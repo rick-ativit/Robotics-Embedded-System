@@ -4,16 +4,15 @@ from matplotlib import pyplot as plt
 from math import copysign, log10
 
 #Import Image, Gray scale, Thresholding
-imageH = cv2.imread('Figures\HCharacter.png')
-imageI = cv2.imread('Figures\ICharacter.png')
-imageT = cv2.imread('Figures\TCharacter.png')
+imageH = cv2.imread('Figures/HCharacter.png')
+imageI = cv2.imread('Figures/ICharacter.png')
+imageT = cv2.imread('Figures/TCharacter.png')
 imageH_Gray = cv2.cvtColor(imageH, cv2.COLOR_BGR2GRAY)
 imageI_Gray = cv2.cvtColor(imageI, cv2.COLOR_BGR2GRAY)
 imageT_Gray = cv2.cvtColor(imageT, cv2.COLOR_BGR2GRAY)
-retH,Hthresh = cv2.threshold(imageH_Gray, 50,255,cv2.THRESH_BINARY_INV)
-retI,Ithresh = cv2.threshold(imageI_Gray,240,255,cv2.THRESH_BINARY)
-retT,Tthresh = cv2.threshold(imageT_Gray,240,255,cv2.THRESH_BINARY)
-plt.rcParams['figure.facecolor'] = 'white'
+retH,Hthresh = cv2.threshold(imageH_Gray, 5,255,cv2.THRESH_BINARY)
+retI,Ithresh = cv2.threshold(imageI_Gray,250,255,cv2.THRESH_BINARY_INV)
+retT,Tthresh = cv2.threshold(imageT_Gray,250,255,cv2.THRESH_BINARY_INV)
 plt.subplot(321), plt.imshow(imageH[:,:,::-1]), plt.title("H-Original")
 plt.subplot(323), plt.imshow(imageI[:,:,::-1]), plt.title("I-Original")
 plt.subplot(325), plt.imshow(imageT[:,:,::-1]), plt.title("T-Original")
@@ -21,7 +20,7 @@ plt.subplot(325), plt.imshow(imageT[:,:,::-1]), plt.title("T-Original")
 #Check
 #cv2.imshow('image',imageI)
 #cv2.imshow('gray',imageI_Gray)
-#cv2.imshow('thresh',Ithresh)
+#cv2.imshow('thresh',Tthresh)
 
 #Step1: H
 plt.subplot(322), plt.imshow(Hthresh,'gray'), plt.title("H-Character Image")
