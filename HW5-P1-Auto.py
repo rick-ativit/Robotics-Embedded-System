@@ -58,9 +58,9 @@ cv2.destroyAllWindows()
 
 # Best match at a glance
 print('\nBest match summary:')
-print('File: CarCloser.jpg')
+print('Source: CarCloser.jpg')
 print('Best match scale: ',Best_match['Figures\\Cars\\CarCloser.jpg'])
-print('File: CarMuchCloser.jpg')
+print('Source: CarMuchCloser.jpg')
 print('Best match scale: ',Best_match['Figures\\Cars\\CarMuchCloser.jpg'])
-print('File: CarOriginal.jpg')
+print('Source: CarOriginal.jpg')
 print('Best match scale: ',Best_match['Figures\\Cars\\CarOriginal.jpg'])
