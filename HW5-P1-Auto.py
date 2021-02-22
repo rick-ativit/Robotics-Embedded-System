@@ -14,6 +14,9 @@ cv2.imshow("Car Template", template)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
+# Best match Dictionary
+Best_match = {}
+
 # Step 3
 for imagePath in glob2.glob("Figures\Cars" + "/*.jpg"):
     print(imagePath)
@@ -43,6 +46,7 @@ for imagePath in glob2.glob("Figures\Cars" + "/*.jpg"):
     # unpack the bookkeeping variable and compute the (x, y) coordinates of the bounding box based on the resized ratio
     (maxVal, maxLoc, r) = found
     print("Best Match Scale = ",1.0/r,"; MaxValue = ", maxVal)
+    Best_match[imagePath] = 1.0/r
     (startX, startY) = (int(maxLoc[0] * r), int(maxLoc[1] * r))
     (endX, endY) = (int((maxLoc[0] + wT) * r), int((maxLoc[1] + hT) * r))
     cv2.rectangle(image, (startX, startY), (endX, endY), (0, 0, 255), 2) # draw a bounding box around the detected result
@@ -51,3 +55,12 @@ for imagePath in glob2.glob("Figures\Cars" + "/*.jpg"):
     cv2.destroyWindow("Visualize")
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+
+# Best match at a glance
+print('\nBest match summary:')
+print('File: CarCloser.jpg')
+print('Best match scale: ',Best_match['Figures\\Cars\\CarCloser.jpg'])
+print('File: CarMuchCloser.jpg')
+print('Best match scale: ',Best_match['Figures\\Cars\\CarMuchCloser.jpg'])
+print('File: CarOriginal.jpg')
+print('Best match scale: ',Best_match['Figures\\Cars\\CarOriginal.jpg'])
