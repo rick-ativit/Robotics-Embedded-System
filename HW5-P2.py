@@ -41,7 +41,17 @@ plt.subplot(133), plt.imshow(result['timg'],cmap = 'gray'), plt.title("Transform
 print("Results:")
 print("Scaling is {}, Rotated Angle is {:.4g}".format(result['scale'], result['angle']))
 print("Translation is {}, success rate {:.4g}".format(result['tvec'], result["success"]))
-print("Dimension of transformed image is {}x{}".format(result['timg'].shape[1],result['timg'].shape[0]))
+print("Dimension of transformed image is {}x{}\n".format(result['timg'].shape[1],result['timg'].shape[0]))
 
 plt.show()
 
+#Check the results:
+# rowsf,colsf = source.shape[:2]
+# Mrr = cv2.getRotationMatrix2D((colsf/2,rowsf/2),-24.99,1)
+# rott = cv2.warpAffine(source,Mrr,(colsf,rowsf))
+# cv2.imshow("Rotate back",rott)
+# cv2.waitKey(0)
+# Mrtt = np.float32([[1,0,6.73240556],[0,1,-204.36426226]])
+# sourcef = cv2.warpAffine(rott,Mrtt,(colsf,rowsf))
+# cv2.imshow("Translate back",sourcef)
+# cv2.waitKey(0)
