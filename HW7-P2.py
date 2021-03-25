@@ -59,9 +59,8 @@ while (True): # Main loop
         yc = int(y+(h/2))
         saved = np.array([(xc,yc,w,h,fps)])
         saved1 = np.copy(saved)
-        print(roiBox)
-    elif roiBox is not None:
         roiBox1 = roiBox
+    elif roiBox is not None:
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) # convert current frame to HSV-color space
         
         backProj = cv2.calcBackProject([hsv],[0,2],roi_hist,[0,180,0,255],scale=2) # compute backproject from roi_hist
@@ -102,16 +101,46 @@ yc1 = saved1[...,1]
 w1 = saved1[...,2]
 h1 = saved1[...,3]
 plt.subplot(221)
-plt.title("X Center")  
-plt.plot(fps,xc,fps,xc1)
+plt.title("X Center: Mean Shift")  
+plt.plot(fps,xc)
 plt.subplot(222)
-plt.title("Y Center")  
+plt.title("Y Center: Mean Shift")  
+plt.plot(fps,yc)
+plt.subplot(223)
+plt.title("ROI Width: Mean Shift")  
+plt.plot(fps,w)
+plt.subplot(224)
+plt.title("ROI Height: Mean Shift")  
+plt.plot(fps,h)
+plt.show()
+
+plt.subplot(221)
+plt.title("X Center: Cam Shift")  
+plt.plot(fps,xc1)
+plt.subplot(222)
+plt.title("Y Center: Cam Shift")  
+plt.plot(fps,yc1)
+plt.subplot(223)
+plt.title("ROI Width: Cam Shift")  
+plt.plot(fps,w1)
+plt.subplot(224)
+plt.title("ROI Height: Cam Shift")  
+plt.plot(fps,h1)
+plt.show()
+
+fig = plt.figure()
+plt.subplot(221)
+plt.title("X Center: Compare")  
+l1,=plt.plot(fps,xc)
+l2,=plt.plot(fps,xc1)
+plt.subplot(222)
+plt.title("Y Center: Compare")  
 plt.plot(fps,yc,fps,yc1)
 plt.subplot(223)
-plt.title("ROI Width")  
+plt.title("ROI Width: Compare")  
 plt.plot(fps,w,fps,w1)
 plt.subplot(224)
-plt.title("ROI Height")  
+plt.title("ROI Height: Compare")  
 plt.plot(fps,h,fps,h1)
-plt.show()
+fig.legend((l1,l2),('Mean Shift','Cam Shift'),loc = "upper center")
 plt.show()
