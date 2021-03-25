@@ -7,13 +7,13 @@ cap = cv2.VideoCapture('Figures/PizzaConveyor.mp4')
 frame = None      # each frame from VDO file
 roiPts = []       # 4 corner point of ROI
 inputMode = False # Check for mouse-click input mode
-saved = []
+saved = []        # list for using as saved values array
 
+# Step 1
 # Callback function to create ROI from 4 points, clicked by the user 
 def click_and_crop(event, x, y, flags, param):
-    # Declare global variables: 1)current frame, 2) list of ROI points, 3) input mode
-    global frame, roiPts, inputMode, saved
- 
+    # Declare global variables: 1)current frame, 2) list of ROI points, 3) input mode 4)saved list
+    global frame, roiPts, inputMode, saved 
     # Checking conditions: ROI selection/input mode, left-mouse click, if 4 points are selected or not?
     if inputMode and event == cv2.EVENT_LBUTTONDOWN and len(roiPts) < 4:
         roiPts.append((x, y)) # update a list of ROI points with (x, y) location of mouse click
@@ -28,6 +28,7 @@ cv2.setMouseCallback("image", click_and_crop)
 term_crit = ( cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10, 1 )
 roiBox = None # intialize ROI region as none/empty
 
+#Step 2 & 3
 while (True): # Main loop
     ret, frame = cap.read() # Reading next frames from video
     frame1 = frame.copy()
@@ -57,40 +58,41 @@ while (True): # Main loop
         x,y,w,h = roiBox
         xc = int(x+(w/2))
         yc = int(y+(h/2))
-        saved = np.array([(xc,yc,w,h,fps)])
-        saved1 = np.copy(saved)
-        roiBox1 = roiBox
+        saved = np.array([(xc,yc,w,h,fps)]) #array for saved values for meanshift
+        saved1 = np.copy(saved) #copy of saved array for Camshift
+        roiBox1 = roiBox #copy of roiBox for Camshift
     elif roiBox is not None:
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) # convert current frame to HSV-color space
         
         backProj = cv2.calcBackProject([hsv],[0,2],roi_hist,[0,180,0,255],scale=2) # compute backproject from roi_hist
         
         ret, roiBox = cv2.meanShift(backProj, roiBox, term_crit) # "meanshift": compute the new window to track object
-        ret, roiBox1 = cv2.CamShift(backProj, roiBox1, term_crit) # "meanshift": compute the new window to track object
+        ret, roiBox1 = cv2.CamShift(backProj, roiBox1, term_crit) # "Camshift": compute the new window to track object
 
         x,y,w,h = roiBox
-        xc = int(x+(w/2))
-        yc = int(y+(h/2))
-        saved = np.append(saved, [(xc,yc,w,h,fps)], axis=0)
+        xc = int(x+(w/2)) # Center pt x
+        yc = int(y+(h/2)) # Center pt y
+        saved = np.append(saved, [(xc,yc,w,h,fps)], axis=0) # Append value of each frame
         
         x1,y1,w1,h1 = roiBox1
-        xc1 = int(x1+(w1/2))
-        yc1 = int(y1+(h1/2))
-        saved1 = np.append(saved1, [(xc1,yc1,w1,h1,fps)], axis=0)
-#         print("x roi = ",x," y roi = ",y)
+        xc1 = int(x1+(w1/2)) # Center pt x
+        yc1 = int(y1+(h1/2)) # Center pt y
+        saved1 = np.append(saved1, [(xc1,yc1,w1,h1,fps)], axis=0) # Append value of each frame
         frame = cv2.rectangle(frame, (x,y), (x+w,y+h), (0,255,0) ,2) # Draw new windown on current frame
         cv2.circle(frame, (int(x+(w/2.0)), int(y+(h/2.0))), 4, (0, 255, 0), 2) # Draw a circle center of new window 
         frame1 = cv2.rectangle(frame1, (x1,y1), (x1+w1,y1+h1), (0,0,255) ,2) # Draw new windown on current frame
-        cv2.circle(frame1, (int(x1+(w1/2.0)), int(y1+(h1/2.0))), 4, (0, 0, 255), 2) # Draw a circle center of new window 
+        cv2.circle(frame1, (int(x1+(w1/2.0)), int(y1+(h1/2.0))), 4, (0, 0, 255), 2) # Draw a circle center of new window         
         
-        
-    cv2.imshow("Object Tracking: MeanShift", frame)
-    cv2.imshow("Object Tracking: CamShift", frame1)
+    cv2.imshow("Object Tracking: MeanShift", frame) # Show meanshift tracking
+    cv2.imshow("Object Tracking: CamShift", frame1) # Show camshift tracking
     keyboard = cv2.waitKey(30)
     if keyboard == 'q' or keyboard == 27 or fps==338:
         break        
 cv2.destroyAllWindows()
 cap.release()
+
+# Step 4
+# Meanshift plot
 fps = saved[...,4]
 xc = saved[...,0]
 yc = saved[...,1]
@@ -113,7 +115,7 @@ plt.subplot(224)
 plt.title("ROI Height: Mean Shift")  
 plt.plot(fps,h)
 plt.show()
-
+# Camshift plot
 plt.subplot(221)
 plt.title("X Center: Cam Shift")  
 plt.plot(fps,xc1)
@@ -127,7 +129,7 @@ plt.subplot(224)
 plt.title("ROI Height: Cam Shift")  
 plt.plot(fps,h1)
 plt.show()
-
+# Compare plot
 fig = plt.figure()
 plt.subplot(221)
 plt.title("X Center: Compare")  
