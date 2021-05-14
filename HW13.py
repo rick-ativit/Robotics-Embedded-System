@@ -3,13 +3,14 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.decomposition import PCA
 from keras.models import Sequential
-from keras.layers import Dense
+from keras.layers import Dense, Dropout
 from tensorflow.keras import initializers
 from keras.utils import np_utils
 from keras.optimizers import SGD, Adam
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from timeit import default_timer as timer
 
 # Part 1: Load Breast Cancer Dataset ----------------------------------------------------------
 breast = load_breast_cancer()
@@ -58,9 +59,9 @@ print(normalised_breast.tail())
 # Step 3: Preparing training dataset and testing dataset
 def prepare_data():
     # Using first 66% of sample for training dataset
-    n_train = 376
+    n_train = 376 # 66% of 569
     X_train, X_test = X[:n_train, :], X[n_train:, :]
-    # Using 33% for testing dataset
+    # Using remaining 33% for testing dataset
     y_train, y_test = y[:n_train], y[n_train:]
     return X_train, y_train, X_test, y_test
 
@@ -73,22 +74,25 @@ def fit_model(X_train, y_train, X_test, y_test, lrate, col):
 
     # Add an input layer: dimensionality of the output space = 10 hidden units
     model.add(Dense(10, activation='relu', kernel_initializer=initializer, input_shape=(376,col)))
-    # Add two Hidden layer: output of this layer is arrays of shape = 8 hidden unit 
+    # Add two Hidden layer: output of this layer is arrays of shape = 45 hidden unit 
     model.add(Dense(45, activation='relu', kernel_initializer=initializer))
     model.add(Dense(45, activation='relu', kernel_initializer=initializer))
     # Add an output layer: ending network with a Dense layer of size 3.
     model.add(Dense(3, activation='softmax'))
 
-    # compile the MLP network  ------------------------------------------------------------------------
+    # compile the DNN network  ------------------------------------------------------------------------
+    Tstart = timer()
     # The loss function is the ‘sparse_categorical_crossentropy‘, which is appropriate for integer encoded class labels
-    opt = SGD(lr = lrate, momentum = 0.8)
+    opt = SGD(lr = lrate, momentum = 0.9)
     model.compile(optimizer=opt,loss='sparse_categorical_crossentropy', metrics=['accuracy'])
     # fit the MLP network ------------------------------------------------------------------------------
     # Train the model for 150 epochs or iterations over all the samples
-    historyFit = model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=150, verbose=0, batch_size=32)
+    historyFit = model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=150, verbose=0, batch_size=35)
     # evaluate the model performance-----------------------------------------------------------------
     loss, acc = model.evaluate(X_test, y_test, verbose=0)
     print('Test Accuracy: %.3f' % acc)
+    Tend = timer(); deltaT = Tend - Tstart
+    print('Training deltaT = ',deltaT,' sec') 
     plt.plot(historyFit.history['accuracy'], label='train', color='b')
     plt.plot(historyFit.history['val_accuracy'], label='test', color='r')
     plt.title('Learning Rate = '+str(lrate), pad=-40)
@@ -100,6 +104,7 @@ col = 30
 X_train, y_train, X_test, y_test = prepare_data()
 # create learning curves for different learning rates
 learning_rates = [0.5, 0.1, 0.075, 0.05]
+plt.figure(figsize=[12.8,10])
 for i in range(len(learning_rates)):
     # assign different plot number
     plot_no = (i+1)
@@ -107,6 +112,7 @@ for i in range(len(learning_rates)):
     # Training MLP model and plot learning curves for a learning rate
     fit_model(X_train, y_train, X_test, y_test, learning_rates[i], col)
 # show learning curves
+plt.savefig('MSGD.png')
 plt.show()
 
 # Step 5: Projecting the original 30-D data into 2-D principal components --------------------------
@@ -147,6 +153,7 @@ print('finalDf:',X)
 X_train, y_train, X_test, y_test = prepare_data()
 # create learning curves for different learning rates
 learning_rates = [0.5, 0.1, 0.075, 0.05]
+plt.figure(figsize=[12.8,10])
 for i in range(len(learning_rates)):
     # assign different plot number
     plot_no = (i+1)
@@ -154,4 +161,5 @@ for i in range(len(learning_rates)):
     # Training MLP model and plot learning curves for a learning rate
     fit_model(X_train, y_train, X_test, y_test, learning_rates[i], col)
 # show learning curves
+plt.savefig('PCA_MSGD.png')
 plt.show()
